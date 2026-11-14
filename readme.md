@@ -8,8 +8,21 @@
 
 <h3>NOTE: This is a fork of <a href="https://github.com/tandpfun/skill-icons">tandpfun/skill-icons</a>. To keep icons consistent and to ensure browser support, we don't accept pull requests for icon submissions. If you would like an icon added, please open an issue.</h3>
 
+# Why This Fork?
+
+The main reason is that the upstream repository, [tandpfun/skill-icons](https://github.com/tandpfun/skill-icons), is no longer maintained. Its last commit was on **Feb 27, 2026**, and there has been no activity for more than nine months since then.
+
+Beyond that, this fork exists because:
+
+- **Icon requests go unanswered upstream.** Over 1,200 open issues and 90+ open pull requests have been left untouched, so new icon requests are unlikely to ever be addressed there.
+- **Newer technologies are missing.** This fork adds 30+ icons for tools that have become popular recently, such as Claude Code, Gemini, Antigravity, Codex, Devin, CodeRabbit, Hono, Zod, Valibot, Drizzle, tsdown, Rspack, Nitro, h3, JSR, OpenTelemetry, and more.
+- **Existing icons need updates.** When brands refresh their logos (e.g. Firebase), the icons here are updated to stay accurate.
+- **Independent hosting.** This fork is served from its own Cloudflare Workers endpoint (`it-icons.ka-non.workers.dev`), so it does not depend on the availability of the upstream service.
+- **Modernized tooling.** The development setup has been updated (wrangler v4, npm) to keep the project easy to build and deploy.
+
 # Docs
 
+- [Why This Fork?](#why-this-fork)
 - [Example](#example)
 - [Specifying Icons](#specifying-icons)
 - [Themed Icons](#themed-icons)
