@@ -1,7 +1,7 @@
 <h3 align="center">Showcase your skills on your GitHub or resumé with ease!</h3>
 <h3 align="center">Powered by Cloudflare Workers ⚡</h3>
 
-<h3>NOTE: This is a fork of <a href="https://github.com/tandpfun/skill-icons">tandpfun/skill-icons</a></h3>
+<h3>NOTE: This is a fork of <a href="https://github.com/tandpfun/skill-icons">tandpfun/skill-icons</a>. To keep icons consistent and to ensure browser support, we don't accept pull requests for icon submissions. If you would like an icon added, please open an issue.</h3>
 
 # Docs
 
@@ -273,6 +273,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |      `sqlite`      |       <img src="./icons/SQLite.svg" width="48">       |
 |  `stackoverflow`   | <img src="./icons/StackOverflow-Dark.svg" width="48"> |
 |    `storybook`     |  <img src="./icons/Storybook-Dark.svg" width="48">   |
+|     `stryker`      |    <img src="./icons/Stryker-Dark.svg" width="48">    |
 | `styledcomponents` |  <img src="./icons/StyledComponents.svg" width="48">  |
 |     `sublime`      |    <img src="./icons/Sublime-Dark.svg" width="48">    |
 |     `supabase`     |   <img src="./icons/Supabase-Dark.svg" width="48">    |
