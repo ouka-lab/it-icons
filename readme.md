@@ -124,6 +124,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |    `cloudflare`    |  <img src="./icons/Cloudflare-Dark.svg" width="48">   |
 |      `cmake`       |     <img src="./icons/CMake-Dark.svg" width="48">     |
 |     `codepen`      |    <img src="./icons/CodePen-Dark.svg" width="48">    |
+|      `codex`       |     <img src="./icons/Codex-Dark.svg" width="48">     |
 |   `coffeescript`   | <img src="./icons/CoffeeScript-Dark.svg" width="48">  |
 |       `css`        |        <img src="./icons/CSS.svg" width="48">         |
 |     `cypress`      |    <img src="./icons/Cypress-Dark.svg" width="48">    |
