@@ -152,6 +152,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |     `firebase`     |   <img src="./icons/Firebase-Dark.svg" width="48">    |
 |      `flask`       |     <img src="./icons/Flask-Dark.svg" width="48">     |
 |     `flutter`      |    <img src="./icons/Flutter-Dark.svg" width="48">    |
+|     `formisch`     |   <img src="./icons/Formisch-Dark.svg" width="48">    |
 |      `forth`       |       <img src="./icons/Forth.svg" width="48">        |
 |     `fortran`      |      <img src="./icons/Fortran.svg" width="48">       |
 | `gamemakerstudio`  |  <img src="./icons/GameMakerStudio.svg" width="48">   |
