@@ -176,6 +176,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |      `heroku`      |       <img src="./icons/Heroku.svg" width="48">       |
 |    `hibernate`     |   <img src="./icons/Hibernate-Dark.svg" width="48">   |
 |       `html`       |        <img src="./icons/HTML.svg" width="48">        |
+|       `hono`       |     <img src="./icons/Hono-Dark.svg" width="48">      |
 |       `htmx`       |     <img src="./icons/Htmx-Dark.svg" width="48">      |
 |       `idea`       |     <img src="./icons/Idea-Dark.svg" width="48">      |
 |        `ai`        |    <img src="./icons/Illustrator.svg" width="48">     |
