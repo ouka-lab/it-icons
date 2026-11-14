@@ -131,6 +131,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |     `cypress`      |    <img src="./icons/Cypress-Dark.svg" width="48">    |
 |        `d3`        |      <img src="./icons/D3-Dark.svg" width="48">       |
 |       `dart`       |     <img src="./icons/Dart-Dark.svg" width="48">      |
+|     `datadog`      |    <img src="./icons/Datadog-Dark.svg" width="48">    |
 |      `debian`      |    <img src="./icons/Debian-Dark.svg" width="48">     |
 |       `deno`       |     <img src="./icons/DENO-Dark.svg" width="48">      |
 |      `devin`       |     <img src="./icons/Devin-Dark.svg" width="48">     |
@@ -141,6 +142,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |      `django`      |       <img src="./icons/Django.svg" width="48">       |
 |      `docker`      |       <img src="./icons/Docker.svg" width="48">       |
 |      `dotnet`      |       <img src="./icons/DotNet.svg" width="48">       |
+|     `drizzle`      |    <img src="./icons/Drizzle-Dark.svg" width="48">    |
 |     `dynamodb`     |   <img src="./icons/DynamoDB-Dark.svg" width="48">    |
 |     `eclipse`      |    <img src="./icons/Eclipse-Dark.svg" width="48">    |
 |  `elasticsearch`   | <img src="./icons/Elasticsearch-Dark.svg" width="48"> |
@@ -196,6 +198,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |     `jenkins`      |    <img src="./icons/Jenkins-Dark.svg" width="48">    |
 |       `jest`       |        <img src="./icons/Jest.svg" width="48">        |
 |      `jquery`      |       <img src="./icons/JQuery.svg" width="48">       |
+|       `jsr`        |      <img src="./icons/JSR-Dark.svg" width="48">      |
 |      `kafka`       |       <img src="./icons/Kafka.svg" width="48">        |
 |       `kali`       |     <img src="./icons/Kali-Dark.svg" width="48">      |
 |      `kotlin`      |    <img src="./icons/Kotlin-Dark.svg" width="48">     |
@@ -224,6 +227,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |      `nextjs`      |    <img src="./icons/NextJS-Dark.svg" width="48">     |
 |      `nginx`       |       <img src="./icons/Nginx.svg" width="48">        |
 |       `nim`        |      <img src="./icons/Nim-Dark.svg" width="48">      |
+|      `nitro`       |     <img src="./icons/Nitro-Dark.svg" width="48">     |
 |       `nix`        |      <img src="./icons/Nix-Dark.svg" width="48">      |
 |      `nodejs`      |    <img src="./icons/NodeJS-Dark.svg" width="48">     |
 |      `notion`      |    <img src="./icons/Notion-Dark.svg" width="48">     |
@@ -235,6 +239,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |      `opencv`      |    <img src="./icons/OpenCV-Dark.svg" width="48">     |
 |    `openshift`     |     <img src="./icons/OpenShift.svg" width="48">      |
 |    `openstack`     |   <img src="./icons/OpenStack-Dark.svg" width="48">   |
+|  `opentelemetry`   | <img src="./icons/OpenTelemetry-Dark.svg" width="48"> |
 |       `p5js`       |        <img src="./icons/p5js.svg" width="48">        |
 |       `perl`       |        <img src="./icons/Perl.svg" width="48">        |
 |        `ps`        |     <img src="./icons/Photoshop.svg" width="48">      |
