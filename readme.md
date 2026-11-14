@@ -1,11 +1,7 @@
-<p align="center"><img align="center" width="280" src="./.github/text-logo.svg#gh-dark-mode-only"/></p>
-<p align="center"><img align="center" width="280" src="./.github/text-logo-light.svg#gh-light-mode-only"/></p>
 <h3 align="center">Showcase your skills on your GitHub or resumé with ease!</h3>
-<hr>
-
 <h3 align="center">Powered by Cloudflare Workers ⚡</h3>
 
-<h3>NOTE: To keep icons consistent and to ensure browser support, we don't accept pull requests for icon submissions. If you would like an icon added, please open an issue.<h3>
+<h3>NOTE: This is a fork of <a href="https://github.com/tandpfun/skill-icons">tandpfun/skill-icons</a></h3>
 
 # Docs
 
@@ -326,8 +322,15 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 
 ## 💖 Support the Project
 
-Thank you so much already for using my projects! If you want to go a step further and support my open source work, buy me a coffee:
+Thank you so much already for using my projects! If you want to go a step further and support my open source work
 
-<a href='https://ko-fi.com/Q5Q860KQ2' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+<iframe src="https://github.com/sponsors/ysknsid25/button" title="Sponsor ysknsid25" height="32" width="114" style="border: 0; border-radius: 6px;"></iframe>
 
-To support the project directly, feel free to open issues for icon suggestions, or contribute with a pull request!
+## 📄 License
+
+This project is licensed under the [MIT License](./LICENSE).
+
+This is a fork of [tandpfun/skill-icons](https://github.com/tandpfun/skill-icons), originally created by [tandpfun](https://github.com/tandpfun) and its contributors, and is distributed under the same MIT License.
+
+- Copyright (c) 2022 tandpfun
+- Copyright (c) 2026 ysknsid25 (modifications in this fork)
