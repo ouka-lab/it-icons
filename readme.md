@@ -117,6 +117,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |       `cpp`        |        <img src="./icons/CPP.svg" width="48">         |
 |     `crystal`      |    <img src="./icons/Crystal-Dark.svg" width="48">    |
 |    `cassandra`     |   <img src="./icons/Cassandra-Dark.svg" width="48">   |
+|    `claudecode`    |  <img src="./icons/ClaudeCode-Dark.svg" width="48">   |
 |      `clion`       |     <img src="./icons/CLion-Dark.svg" width="48">     |
 |     `clojure`      |    <img src="./icons/Clojure-Dark.svg" width="48">    |
 |    `cloudflare`    |  <img src="./icons/Cloudflare-Dark.svg" width="48">   |
