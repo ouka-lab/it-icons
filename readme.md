@@ -234,6 +234,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |       `pkl`        |      <img src="./icons/Pkl-Dark.svg" width="48">      |
 |      `plan9`       |     <img src="./icons/Plan9-Dark.svg" width="48">     |
 |   `planetscale`    |  <img src="./icons/PlanetScale-Dark.svg" width="48">  |
+|    `playwright`    |  <img src="./icons/Playwright-Dark.svg" width="48">   |
 |       `pnpm`       |     <img src="./icons/Pnpm-Dark.svg" width="48">      |
 |     `postgres`     |  <img src="./icons/PostgreSQL-Dark.svg" width="48">   |
 |     `postman`      |      <img src="./icons/Postman.svg" width="48">       |
