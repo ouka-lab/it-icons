@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="./.github/text-logo.png#gh-dark-mode-only" alt="IT Icons" height="120"/>
+  <img src="./.github/text-logo-light.png#gh-light-mode-only" alt="IT Icons" height="120"/>
+</p>
+
 <h3 align="center">Showcase your skills on your GitHub or resumé with ease!</h3>
 <h3 align="center">Powered by Cloudflare Workers ⚡</h3>
 
@@ -287,6 +292,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |      `spring`      |    <img src="./icons/Spring-Dark.svg" width="48">     |
 |      `sqlite`      |       <img src="./icons/SQLite.svg" width="48">       |
 |  `stackoverflow`   | <img src="./icons/StackOverflow-Dark.svg" width="48"> |
+|  `standardschema`  |   <img src="./icons/StandardSchema.svg" width="48">   |
 |    `storybook`     |  <img src="./icons/Storybook-Dark.svg" width="48">   |
 |     `stryker`      |    <img src="./icons/Stryker-Dark.svg" width="48">    |
 | `styledcomponents` |  <img src="./icons/StyledComponents.svg" width="48">  |
@@ -335,6 +341,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |     `webstorm`     |   <img src="./icons/WebStorm-Dark.svg" width="48">    |
 |     `windicss`     |   <img src="./icons/WindiCSS-Dark.svg" width="48">    |
 |     `windows`      |    <img src="./icons/Windows-Dark.svg" width="48">    |
+|       `wiz`        |      <img src="./icons/Wiz-Dark.svg" width="48">      |
 |    `wordpress`     |     <img src="./icons/Wordpress.svg" width="48">      |
 |     `workers`      |    <img src="./icons/Workers-Dark.svg" width="48">    |
 |        `xd`        |         <img src="./icons/XD.svg" width="48">         |
