@@ -128,3 +128,8 @@ dist
 
 # Cloudflare Worker
 worker/
+# Wrangler (config is passed via CLI flags in package.json)
+wrangler.toml
+wrangler.json
+wrangler.jsonc
+.wrangler/

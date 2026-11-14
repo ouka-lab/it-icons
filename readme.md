@@ -16,6 +16,7 @@
 - [Icons Per Line](#icons-per-line)
 - [Centering Icons](#centering-icons)
 - [Icons List](#icons-list)
+- [Development & Deployment](#development--deployment)
 
 # Example
 
@@ -137,6 +138,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |        `d3`        |      <img src="./icons/D3-Dark.svg" width="48">       |
 |       `dart`       |     <img src="./icons/Dart-Dark.svg" width="48">      |
 |     `datadog`      |    <img src="./icons/Datadog-Dark.svg" width="48">    |
+|     `dbeaver`      |    <img src="./icons/DBeaver-Dark.svg" width="48">    |
 |      `debian`      |    <img src="./icons/Debian-Dark.svg" width="48">     |
 |       `deno`       |     <img src="./icons/DENO-Dark.svg" width="48">      |
 |      `devin`       |     <img src="./icons/Devin-Dark.svg" width="48">     |
@@ -351,6 +353,27 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |       `zod`        |      <img src="./icons/Zod-Dark.svg" width="48">      |
 
 ---
+
+# Development & Deployment
+
+This project is deployed to Cloudflare Workers from a local machine. No `wrangler.toml` is used: the Worker name and compatibility date are passed as CLI flags in the `package.json` scripts, and the Cloudflare account is taken from your `wrangler login` session. Do not commit Wrangler config files (`wrangler.toml` / `wrangler.json` / `wrangler.jsonc` are git-ignored).
+
+Requirements: Node.js and npm.
+
+```sh
+npm install
+
+# Run locally (http://localhost:8787)
+npm run dev
+
+# Log in to your Cloudflare account (first time only, opens a browser)
+npx wrangler login
+
+# Build dist/icons.json and deploy the Worker "it-icons"
+npm run deploy
+```
+
+After deploying, the Worker is available at `https://it-icons.<your-subdomain>.workers.dev`.
 
 ## 💖 Support the Project
 
