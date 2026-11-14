@@ -92,6 +92,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |  `androidstudio`   | <img src="./icons/AndroidStudio-Dark.svg" width="48"> |
 |     `angular`      |    <img src="./icons/Angular-Dark.svg" width="48">    |
 |     `ansible`      |      <img src="./icons/Ansible.svg" width="48">       |
+|   `antigravity`    |  <img src="./icons/Antigravity-Dark.svg" width="48">  |
 |      `apollo`      |       <img src="./icons/Apollo.svg" width="48">       |
 |      `apple`       |     <img src="./icons/Apple-Dark.svg" width="48">     |
 |     `appwrite`     |      <img src="./icons/Appwrite.svg" width="48">      |
