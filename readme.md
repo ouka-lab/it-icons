@@ -132,6 +132,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |       `dart`       |     <img src="./icons/Dart-Dark.svg" width="48">      |
 |      `debian`      |    <img src="./icons/Debian-Dark.svg" width="48">     |
 |       `deno`       |     <img src="./icons/DENO-Dark.svg" width="48">      |
+|      `devin`       |     <img src="./icons/Devin-Dark.svg" width="48">     |
 |      `devto`       |     <img src="./icons/DevTo-Dark.svg" width="48">     |
 |     `discord`      |      <img src="./icons/Discord.svg" width="48">       |
 |       `bots`       |    <img src="./icons/DiscordBots.svg" width="48">     |
