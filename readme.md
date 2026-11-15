@@ -388,6 +388,17 @@ npm run deploy
 
 After deploying, the Worker is available at `https://it-icons.<your-subdomain>.workers.dev`.
 
+## E2E tests
+
+The API is covered by [Playwright](https://playwright.dev) tests in `e2e/`. They start the Worker locally with `wrangler dev` (no Cloudflare login needed) and run on every pull request via GitHub Actions.
+
+```sh
+npm run test:e2e
+
+# After intentionally changing the generated SVG, update the snapshots in e2e/__snapshots__/
+npm run test:e2e -- --update-snapshots
+```
+
 ## 💖 Support the Project
 
 Thank you so much already for using my projects! If you want to go a step further and support my open source work
