@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('node:fs');
 
 const iconsDir = fs.readdirSync('./icons');
 const icons = {};

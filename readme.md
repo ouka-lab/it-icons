@@ -18,7 +18,7 @@ Beyond that, this fork exists because:
 - **Newer technologies are missing.** This fork adds 30+ icons for tools that have become popular recently, such as Claude Code, Gemini, Antigravity, Codex, Devin, CodeRabbit, Hono, Zod, Valibot, Drizzle, tsdown, Rspack, Nitro, h3, JSR, OpenTelemetry, and more.
 - **Existing icons need updates.** When brands refresh their logos (e.g. Firebase), the icons here are updated to stay accurate.
 - **Independent hosting.** This fork is served from its own Cloudflare Workers endpoint (`it-icons.ka-non.workers.dev`), so it does not depend on the availability of the upstream service.
-- **Modernized tooling.** The development setup has been updated (wrangler v4, npm) to keep the project easy to build and deploy.
+- **Modernized tooling.** The development setup has been updated (wrangler v4, Bun) to keep the project easy to build and deploy.
 
 # Docs
 
@@ -371,19 +371,19 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 
 This project is deployed to Cloudflare Workers from a local machine. No `wrangler.toml` is used: the Worker name and compatibility date are passed as CLI flags in the `package.json` scripts, and the Cloudflare account is taken from your `wrangler login` session. Do not commit Wrangler config files (`wrangler.toml` / `wrangler.json` / `wrangler.jsonc` are git-ignored).
 
-Requirements: Node.js and npm.
+Requirements: [Bun](https://bun.sh).
 
 ```sh
-npm install
+bun install
 
 # Run locally (http://localhost:8787)
-npm run dev
+bun run dev
 
 # Log in to your Cloudflare account (first time only, opens a browser)
-npx wrangler login
+bunx wrangler login
 
 # Build dist/icons.json and deploy the Worker "it-icons"
-npm run deploy
+bun run deploy
 ```
 
 After deploying, the Worker is available at `https://it-icons.<your-subdomain>.workers.dev`.
