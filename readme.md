@@ -219,6 +219,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |       `jest`       |        <img src="./icons/Jest.svg" width="48">        |
 |      `jquery`      |       <img src="./icons/JQuery.svg" width="48">       |
 |       `jsr`        |      <img src="./icons/JSR-Dark.svg" width="48">      |
+|      `julia`       |     <img src="./icons/Julia-Dark.svg" width="48">     |
 |      `kafka`       |       <img src="./icons/Kafka.svg" width="48">        |
 |       `kali`       |     <img src="./icons/Kali-Dark.svg" width="48">      |
 |      `kotlin`      |    <img src="./icons/Kotlin-Dark.svg" width="48">     |
@@ -304,11 +305,12 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |       `ruby`       |        <img src="./icons/Ruby.svg" width="48">        |
 |       `rust`       |        <img src="./icons/Rust.svg" width="48">        |
 |       `sass`       |        <img src="./icons/Sass.svg" width="48">        |
+|     `spotify`      |    <img src="./icons/Spotify-Dark.svg" width="48">    |
 |      `spring`      |    <img src="./icons/Spring-Dark.svg" width="48">     |
 |      `sqlite`      |       <img src="./icons/SQLite.svg" width="48">       |
 |  `stackoverflow`   | <img src="./icons/StackOverflow-Dark.svg" width="48"> |
 |  `standardschema`  |   <img src="./icons/StandardSchema.svg" width="48">   |
-|    `storybook`     |  <img src="./icons/Storybook-Dark.svg" width="48">   |
+|    `storybook`     |   <img src="./icons/Storybook-Dark.svg" width="48">   |
 |     `stryker`      |    <img src="./icons/Stryker-Dark.svg" width="48">    |
 | `styledcomponents` |  <img src="./icons/StyledComponents.svg" width="48">  |
 |     `sublime`      |    <img src="./icons/Sublime-Dark.svg" width="48">    |
@@ -342,6 +344,7 @@ Here's a list of all the icons currently supported. Feel free to open an issue t
 |       `vala`       |        <img src="./icons/Vala.svg" width="48">        |
 |     `valibot`      |    <img src="./icons/Valibot-Dark.svg" width="48">    |
 |      `vercel`      |    <img src="./icons/Vercel-Dark.svg" width="48">     |
+|     `verilog`      |      <img src="./icons/Verilog.svg" width="48">       |
 |       `vim`        |      <img src="./icons/VIM-Dark.svg" width="48">      |
 |   `visualstudio`   | <img src="./icons/VisualStudio-Dark.svg" width="48">  |
 |       `vite`       |     <img src="./icons/Vite-Dark.svg" width="48">      |
@@ -387,6 +390,14 @@ bun run deploy
 ```
 
 After deploying, the Worker is available at `https://it-icons.<your-subdomain>.workers.dev`.
+
+## Unit tests
+
+The Worker logic (`lib.js`), the build script and the consistency between `icons/` and the icon list in this readme are covered by [Bun's test runner](https://bun.sh/docs/cli/test) tests in `test/`. They run on every pull request via GitHub Actions.
+
+```sh
+bun run test
+```
 
 ## E2E tests
 
