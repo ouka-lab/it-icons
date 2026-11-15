@@ -1,3 +1,12 @@
 [test]
 # e2e/*.spec.js は Playwright 用なので、bun test の対象を test/ に限定する
 root = "./test"
+
+[fmt]
+# bun fmt の設定 (Prettier 互換のオプション)
+singleQuote = true
+arrowParens = "avoid"
+semi = true
+tabWidth = 2
+# アイコンと E2E のスナップショットは生成物と一致させる必要があるので整形しない
+ignorePatterns = ["icons/", "e2e/__snapshots__/"]
