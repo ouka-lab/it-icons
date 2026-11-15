@@ -20,7 +20,7 @@ const positions = svg =>
 
 const svgAttrs = svg => {
   const m = svg.match(
-    /<svg width="([^"]+)" height="([^"]+)" viewBox="0 0 ([^ ]+) ([^"]+)"/
+    /<svg width="([^"]+)" height="([^"]+)" viewBox="0 0 ([^ ]+) ([^"]+)"/,
   );
   if (!m) throw new Error('svg 要素が見つかりません');
   return {
@@ -70,10 +70,10 @@ describe('parseShortNames', () => {
 
   test('別名は正式名に変換され、テーマも反映される', () => {
     expect(parseShortNames(['js', 'k8s'])).toEqual(
-      parseShortNames(['javascript', 'kubernetes'])
+      parseShortNames(['javascript', 'kubernetes']),
     );
     expect(parseShortNames(['next'], 'light')).toEqual(
-      parseShortNames(['nextjs'], 'light')
+      parseShortNames(['nextjs'], 'light'),
     );
   });
 
@@ -132,14 +132,14 @@ describe('generateSvg', () => {
 
   test('perLine はクエリ文字列のままでも数値として扱われる', () => {
     expect(generateSvg(Array(3).fill('adonis'), '2')).toBe(
-      generateSvg(Array(3).fill('adonis'), 2)
+      generateSvg(Array(3).fill('adonis'), 2),
     );
   });
 
   test('アイコンは指定した順に埋め込まれる', () => {
     const svg = generateSvg(['adonis', 'java-dark'], 15);
     expect(svg.indexOf(icons.adonis)).toBeLessThan(
-      svg.indexOf(icons['java-dark'])
+      svg.indexOf(icons['java-dark']),
     );
   });
 });
@@ -150,7 +150,7 @@ describe('handleRequest', () => {
     expect(res.status).toBe(200);
     expect(res.headers.get('content-type')).toBe('image/svg+xml');
     expect(await res.text()).toBe(
-      generateSvg(parseShortNames(['java', 'adonis'], 'light'), '1')
+      generateSvg(parseShortNames(['java', 'adonis'], 'light'), '1'),
     );
   });
 
@@ -188,7 +188,7 @@ describe('handleRequest', () => {
   test('GET /api/icons はアイコン名の一覧を返す', async () => {
     const res = await get('/api/icons');
     expect(res.headers.get('content-type')).toBe(
-      'application/json;charset=UTF-8'
+      'application/json;charset=UTF-8',
     );
     expect(await res.json()).toEqual(iconNameList);
   });
@@ -196,7 +196,7 @@ describe('handleRequest', () => {
   test('GET /api/svgs はすべての SVG を返す', async () => {
     const res = await get('/api/svgs');
     expect(res.headers.get('content-type')).toBe(
-      'application/json;charset=UTF-8'
+      'application/json;charset=UTF-8',
     );
     expect(await res.json()).toEqual(icons);
   });
@@ -205,14 +205,14 @@ describe('handleRequest', () => {
 describe('shortNames', () => {
   test('別名の変換先はすべて実在するアイコン', () => {
     const missing = Object.values(shortNames).filter(
-      name => !iconNameList.includes(name)
+      name => !iconNameList.includes(name),
     );
     expect(missing).toEqual([]);
   });
 
   test('別名が実在するアイコン名と重複していない (重複すると別名が使われない)', () => {
     const shadowed = Object.keys(shortNames).filter(name =>
-      iconNameList.includes(name)
+      iconNameList.includes(name),
     );
     expect(shadowed).toEqual([]);
   });

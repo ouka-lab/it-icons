@@ -68,11 +68,11 @@ function generateSvg(iconNames, perLine) {
         (i, index) =>
           `
         <g transform="translate(${(index % perLine) * 300}, ${
-            Math.floor(index / perLine) * 300
-          })">
+          Math.floor(index / perLine) * 300
+        })">
           ${i}
         </g>
-        `
+        `,
       )
       .join(' ')}
   </svg>

@@ -13,7 +13,7 @@ beforeAll(() => {
   fs.writeFileSync(path.join(dir, 'icons', 'Foo-Dark.svg'), '<svg>dark</svg>');
   fs.writeFileSync(
     path.join(dir, 'icons', 'Foo-Light.svg'),
-    '<svg>light</svg>'
+    '<svg>light</svg>',
   );
   fs.writeFileSync(path.join(dir, 'icons', 'Bar.svg'), '<svg>bar</svg>');
 });
@@ -27,7 +27,7 @@ test('ファイル名を小文字にしたキーで SVG をまとめた JSON を
   expect(result.exitCode).toBe(0);
 
   const json = JSON.parse(
-    fs.readFileSync(path.join(dir, 'dist', 'icons.json'), 'utf8')
+    fs.readFileSync(path.join(dir, 'dist', 'icons.json'), 'utf8'),
   );
   expect(json).toEqual({
     bar: '<svg>bar</svg>',

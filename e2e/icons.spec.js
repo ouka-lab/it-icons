@@ -16,7 +16,7 @@ const countIcons = svg =>
 
 const svgSize = svg => {
   const m = svg.match(
-    /<svg width="([^"]+)" height="([^"]+)" viewBox="0 0 ([^ ]+) ([^"]+)"/
+    /<svg width="([^"]+)" height="([^"]+)" viewBox="0 0 ([^ ]+) ([^"]+)"/,
   );
   if (!m) throw new Error('svg 要素が見つかりません');
   return { width: m[1], height: m[2], viewW: m[3], viewH: m[4] };
@@ -80,7 +80,7 @@ test.describe('GET /icons: 出力される SVG', () => {
     request,
   }) => {
     expect(await getSvg(request, 'icons=java,kotlin&t=light')).toBe(
-      await getSvg(request, 'i=java,kotlin&theme=light')
+      await getSvg(request, 'i=java,kotlin&theme=light'),
     );
   });
 
@@ -90,12 +90,12 @@ test.describe('GET /icons: 出力される SVG', () => {
     expect(await getSvg(request, 'i=js,ts,py,k8s,tailwind')).toBe(
       await getSvg(
         request,
-        'i=javascript,typescript,python,kubernetes,tailwindcss'
-      )
+        'i=javascript,typescript,python,kubernetes,tailwindcss',
+      ),
     );
     // テーマ付きアイコンへの別名にもテーマが反映される
     expect(await getSvg(request, 'i=next&theme=light')).toBe(
-      await getSvg(request, 'i=nextjs&theme=light')
+      await getSvg(request, 'i=nextjs&theme=light'),
     );
   });
 
@@ -117,7 +117,7 @@ test.describe('GET /icons: 出力される SVG', () => {
     const svg = await getSvg(request, 'i=java,no-such-icon');
     expect(countIcons(svg)).toBe(2);
     expect(svg).toMatch(
-      /<g transform="translate\(300, 0\)">\s*undefined\s*<\/g>/
+      /<g transform="translate\(300, 0\)">\s*undefined\s*<\/g>/,
     );
   });
 });

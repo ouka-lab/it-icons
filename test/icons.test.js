@@ -16,7 +16,7 @@ describe('icons/', () => {
   test('ファイル名は "<英数字>" か "<英数字>-Dark|Light" の形式', () => {
     // index.js は "-" で区切ってテーマを判定するため、それ以外の "-" は使えない
     expect(names.filter(n => !/^[a-z0-9]+(-(dark|light))?$/.test(n))).toEqual(
-      []
+      [],
     );
   });
 
@@ -62,20 +62,20 @@ describe('readme のアイコン一覧', () => {
 
   test('載っている名前はすべて API で使える', () => {
     expect(
-      rows.filter(r => parseShortNames([r.id])[0] === undefined).map(r => r.id)
+      rows.filter(r => parseShortNames([r.id])[0] === undefined).map(r => r.id),
     ).toEqual([]);
   });
 
   test('画像ファイルがすべて存在する', () => {
     expect(
-      rows.filter(r => !fs.existsSync(path.join(root, r.src))).map(r => r.src)
+      rows.filter(r => !fs.existsSync(path.join(root, r.src))).map(r => r.src),
     ).toEqual([]);
   });
 
   test('すべてのアイコンが載っている', () => {
     // readme には別名 (js など) で載っているものがあるので正式名に変換して比べる
     const ids = new Set(
-      rows.map(r => parseShortNames([r.id])[0]?.replace(/-(dark|light)$/, ''))
+      rows.map(r => parseShortNames([r.id])[0]?.replace(/-(dark|light)$/, '')),
     );
     expect(iconNameList.filter(n => !ids.has(n))).toEqual([]);
   });
