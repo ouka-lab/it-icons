@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+# コミットメッセージの先頭に決められたプレフィックスがあるかを検証する。
+# プレフィックスは .github/workflows/label-pr.yml のラベル付けと対応している。
+msg=$(head -n 1 "$1")
+
+# merge / revert / fixup などの git が自動生成するメッセージは許可する
+if echo "$msg" | grep -qE '^(Merge|Revert|fixup!|squash!|amend!) '; then
+  exit 0
+fi
+
+if ! echo "$msg" | grep -qE '^(feature|fix|docs|chore)(\([^)]+\))?!?: .+'; then
+  echo "✖ コミットメッセージには次のいずれかのプレフィックスが必要です:" >&2
+  echo "    feature: / fix: / docs: / chore:" >&2
+  echo "  例) feature: add antigravity icon" >&2
+  echo "  受け取ったメッセージ: $msg" >&2
+  exit 1
+fi

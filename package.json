@@ -6,9 +6,11 @@
 	"scripts": {
 		"build": "node build.js",
 		"dev": "npm run build && wrangler dev index.js --name it-icons --compatibility-date 2026-11-01",
-		"deploy": "npm run build && wrangler deploy index.js --name it-icons --compatibility-date 2026-11-01"
+		"deploy": "npm run build && wrangler deploy index.js --name it-icons --compatibility-date 2026-11-01",
+		"prepare": "husky"
 	},
 	"devDependencies": {
+		"husky": "^9.1.7",
 		"prettier": "^2.5.1",
 		"wrangler": "^4"
 	}
