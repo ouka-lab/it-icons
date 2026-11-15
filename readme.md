@@ -83,7 +83,9 @@ Want to center the icons in your readme? The SVGs are automatically resized, so 
 ```html
 <p align="center">
   <a href="https://github.com/ouka-lab/it-icons">
-    <img src="https://it-icons.ka-non.workers.dev/icons?i=git,kubernetes,docker,c,vim" />
+    <img
+      src="https://it-icons.ka-non.workers.dev/icons?i=git,kubernetes,docker,c,vim"
+    />
   </a>
 </p>
 ```

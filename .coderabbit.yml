@@ -3,4 +3,4 @@ reviews:
   request_changes_workflow: true
   slop_detection:
     enabled: true
-    label: "slop"
+    label: 'slop'

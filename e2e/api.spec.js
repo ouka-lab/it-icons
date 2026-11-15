@@ -6,7 +6,7 @@ const path = require('path');
 // webServer の起動時にビルドスクリプトで生成される
 const loadIcons = () =>
   JSON.parse(
-    fs.readFileSync(path.join(__dirname, '..', 'dist', 'icons.json'), 'utf8')
+    fs.readFileSync(path.join(__dirname, '..', 'dist', 'icons.json'), 'utf8'),
   );
 
 test.describe('GET /api/svgs', () => {
@@ -14,7 +14,7 @@ test.describe('GET /api/svgs', () => {
     const res = await request.get('/api/svgs');
     expect(res.status()).toBe(200);
     expect(res.headers()['content-type']).toBe(
-      'application/json;charset=UTF-8'
+      'application/json;charset=UTF-8',
     );
     expect(await res.json()).toEqual(loadIcons());
   });
@@ -25,7 +25,7 @@ test.describe('GET /api/icons', () => {
     const res = await request.get('/api/icons');
     expect(res.status()).toBe(200);
     expect(res.headers()['content-type']).toBe(
-      'application/json;charset=UTF-8'
+      'application/json;charset=UTF-8',
     );
 
     const names = await res.json();
