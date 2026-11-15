@@ -24,7 +24,7 @@ const svgSize = svg => {
 
 test.describe('GET /icons: 出力される SVG', () => {
   // 生成される SVG 全体をスナップショットで固定する。
-  // アイコンの SVG を意図的に変更したときは `npm run test:e2e -- --update-snapshots` で更新する。
+  // アイコンの SVG を意図的に変更したときは `bun run test:e2e --update-snapshots` で更新する。
   const cases = [
     ['single', 'i=java'],
     ['multiple', 'i=java,kotlin,nodejs,figma'],

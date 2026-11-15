@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
 
-// webServer の起動時に npm run build で生成される
+// webServer の起動時にビルドスクリプトで生成される
 const loadIcons = () =>
   JSON.parse(
     fs.readFileSync(path.join(__dirname, '..', 'dist', 'icons.json'), 'utf8')
