@@ -8,6 +8,12 @@
 
 <h3>NOTE: This is a fork of <a href="https://github.com/tandpfun/skill-icons">tandpfun/skill-icons</a>. To keep icons consistent and to ensure browser support, we don't accept pull requests for icon submissions. If you would like an icon added, please open an issue.</h3>
 
+[![GitHub last commit](https://img.shields.io/github/last-commit/ouka-lab/it-icons)](https://github.com/ouka-lab/it-icons/commits/master)
+[![Test](https://github.com/ouka-lab/it-icons/actions/workflows/test.yml/badge.svg)](https://github.com/ouka-lab/it-icons/actions/workflows/test.yml)
+[![Format](https://github.com/ouka-lab/it-icons/actions/workflows/fmt.yml/badge.svg)](https://github.com/ouka-lab/it-icons/actions/workflows/fmt.yml)
+[![e2e](https://github.com/ouka-lab/it-icons/actions/workflows/e2e.yml/badge.svg)](https://github.com/ouka-lab/it-icons/actions/workflows/e2e.yml)
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/ouka-lab/it-icons?utm_source=oss&utm_medium=github&utm_campaign=ouka-lab%2Fit-icons&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 # Why This Fork?
 
 The main reason is that the upstream repository, [tandpfun/skill-icons](https://github.com/tandpfun/skill-icons), is no longer maintained. Its last commit was on **Feb 27, 2026**, and there has been no activity for more than nine months since then.
