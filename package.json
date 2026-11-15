@@ -8,6 +8,7 @@
     "dev": "npm run build && wrangler dev index.js --name it-icons --compatibility-date 2026-11-01",
     "deploy": "npm run test:e2e && npm run build && wrangler deploy index.js --name it-icons --compatibility-date 2026-11-01",
     "prepare": "husky",
+    "test": "bun run build && bun test",
     "test:e2e": "playwright test"
   },
   "devDependencies": {
