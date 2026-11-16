@@ -1,4 +1,4 @@
-// schema.js の各スキーマが正常な入力を通し、異常な入力を落とすことを検証する
+// Checks that each schema in schema.js accepts valid input and rejects invalid input
 const { describe, test, expect } = require('bun:test');
 const v = require('valibot');
 const {
@@ -15,35 +15,35 @@ const messages = (schema, input) =>
 const svg = body => `<svg viewBox="0 0 256 256">${body}</svg>`;
 
 describe('IconIdSchema', () => {
-  test.each(['react', 'c', 'd3', 'java-dark', 'java-light'])('%s を通す', id =>
+  test.each(['react', 'c', 'd3', 'java-dark', 'java-light'])('accepts %s', id =>
     expect(ok(IconIdSchema, id)).toBe(true),
   );
   test.each(['React', 'java-dim', 'foo-bar-dark', 'foo.png', 'foo_bar', ''])(
-    '%s を落とす',
+    'rejects %s',
     id => expect(ok(IconIdSchema, id)).toBe(false),
   );
 });
 
 describe('SvgSchema', () => {
-  test('256x256 の SVG を通す (前後の空白は許す)', () => {
+  test('accepts a 256x256 SVG (surrounding whitespace is allowed)', () => {
     expect(ok(SvgSchema, `\n${svg('x')}\n`)).toBe(true);
   });
   test.each([
-    ['viewBox がない', '<svg>x</svg>'],
-    ['viewBox が違う', '<svg viewBox="0 0 24 24">x</svg>'],
-    ['<svg で始まらない', `<?xml version="1.0"?>${svg('x')}`],
-    ['</svg> で終わらない', '<svg viewBox="0 0 256 256">x'],
-  ])('%s ものを落とす', (_, input) => {
+    ['has no viewBox', '<svg>x</svg>'],
+    ['has a different viewBox', '<svg viewBox="0 0 24 24">x</svg>'],
+    ['does not start with <svg', `<?xml version="1.0"?>${svg('x')}`],
+    ['does not end with </svg>', '<svg viewBox="0 0 256 256">x'],
+  ])('rejects an SVG that %s', (_, input) => {
     expect(ok(SvgSchema, input)).toBe(false);
   });
-  test('入力を書き換えない (dist/icons.json の内容が変わらないように)', () => {
+  test('does not modify the input (so that dist/icons.json stays the same)', () => {
     const input = `\n${svg('x')}\n`;
     expect(v.parse(SvgSchema, input)).toBe(input);
   });
 });
 
 describe('IconsSchema', () => {
-  test('Dark と Light がそろったテーマ付きアイコンとテーマなしアイコンを通す', () => {
+  test('accepts themed icons with both Dark and Light, and icons without themes', () => {
     expect(
       ok(IconsSchema, {
         'foo-dark': svg('d'),
@@ -52,26 +52,26 @@ describe('IconsSchema', () => {
       }),
     ).toBe(true);
   });
-  test('片方のテーマしかないと、足りないファイルを示して落とす', () => {
+  test('rejects an icon with only one theme and names the missing file', () => {
     expect(messages(IconsSchema, { 'foo-light': svg('l') })).toEqual([
-      'foo-light に対応する foo-dark がありません',
+      'foo-dark is missing for foo-light',
     ]);
   });
-  test('テーマ付きとテーマなしの両方があると落とす', () => {
+  test('rejects an icon that exists both with and without themes', () => {
     expect(
       messages(IconsSchema, {
         'foo-dark': svg('d'),
         'foo-light': svg('l'),
         foo: svg('f'),
       }),
-    ).toEqual(['foo はテーマ付きとテーマなしの両方があります']);
+    ).toEqual(['foo exists both with and without themes']);
   });
 });
 
 describe('createIconsConfigSchema', () => {
   const schema = createIconsConfigSchema(['foo', 'bar']);
 
-  test('正しい設定を通す', () => {
+  test('accepts a valid config', () => {
     expect(
       ok(schema, {
         foo: { aliases: ['f', 'fo'], readmeId: 'f' },
@@ -80,34 +80,34 @@ describe('createIconsConfigSchema', () => {
     ).toBe(true);
   });
   test.each([
-    ['存在しないアイコン', { baz: {} }, 'baz というアイコンはありません'],
+    ['an unknown icon', { baz: {} }, 'There is no icon named baz'],
     [
-      'アイコン名と同じ短縮名',
+      'a short name equal to an icon name',
       { foo: { aliases: ['bar'] } },
-      'foo の短縮名 bar は、同名のアイコンがあるので使えません',
+      'Short name bar of foo cannot be used because an icon has the same name',
     ],
     [
-      '重複した短縮名',
+      'a duplicated short name',
       { foo: { aliases: ['x'] }, bar: { aliases: ['x'] } },
-      '短縮名 x が foo と bar で重複しています',
+      'Short name x is used by both foo and bar',
     ],
     [
-      '正式名でも短縮名でもない readmeId',
+      'a readmeId that is neither the canonical name nor an alias',
       { foo: { aliases: ['f'], readmeId: 'x' } },
-      'foo の readmeId x は、正式名か aliases のいずれかにしてください',
+      'readmeId x of foo must be the canonical name or one of the aliases',
     ],
-  ])('%s を落とす', (_, config, message) => {
+  ])('rejects %s', (_, config, message) => {
     expect(messages(schema, config)).toEqual([message]);
   });
   test.each([
-    ['未知の設定項目', { foo: { alias: ['f'] } }],
-    ['空の aliases', { foo: { aliases: [] } }],
-    ['大文字の短縮名', { foo: { aliases: ['F'] } }],
-  ])('%s を落とす', (_, config) => {
+    ['an unknown setting', { foo: { alias: ['f'] } }],
+    ['empty aliases', { foo: { aliases: [] } }],
+    ['an uppercase short name', { foo: { aliases: ['F'] } }],
+  ])('rejects %s', (_, config) => {
     expect(ok(schema, config)).toBe(false);
   });
 });
 
-test('toIconNames はテーマ違いを 1 つの正式名にまとめる', () => {
+test('toIconNames merges theme variants into one canonical name', () => {
   expect(toIconNames(['foo-dark', 'foo-light', 'bar'])).toEqual(['foo', 'bar']);
 });

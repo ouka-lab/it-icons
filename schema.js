@@ -1,35 +1,35 @@
-// アイコンと icons.config.js のスキーマ。build.js でビルド時に検証する。
-// Worker (lib.js) からは読み込まないので、valibot は Worker のバンドルに入らない。
+// Schemas for the icons and icons.config.js. build.js validates them at build time.
+// The Worker (lib.js) does not load this file, so valibot is not bundled into the Worker.
 const v = require('valibot');
 
-// 正式名・短縮名: 英数字のみ
+// Canonical names and short names: lowercase letters and digits only
 const NameSchema = v.pipe(
   v.string(),
-  v.regex(/^[a-z0-9]+$/, '名前は英小文字と数字のみにしてください'),
+  v.regex(
+    /^[a-z0-9]+$/,
+    'Names must contain only lowercase letters and digits',
+  ),
 );
 
-// icons/ のファイル名を小文字にして .svg を除いたもの。
-// lib.js は "-" で区切ってテーマを判定するため、"-dark" / "-light" 以外の "-" は使えない
+// A file name in icons/, lowercased, without .svg.
+// lib.js splits on "-" to find the theme, so "-" is only allowed in "-dark" / "-light"
 const IconIdSchema = v.pipe(
   v.string(),
   v.regex(
     /^[a-z0-9]+(-(dark|light))?$/,
-    'ファイル名は "<英数字>.svg" か "<英数字>-Dark.svg" / "<英数字>-Light.svg" にしてください',
+    'File names must be "<alphanumeric>.svg" or "<alphanumeric>-Dark.svg" / "<alphanumeric>-Light.svg"',
   ),
 );
 
-// SVG 本体: 256x256 の SVG
+// SVG content: a 256x256 SVG
 const SvgSchema = v.pipe(
   v.string(),
-  v.check(s => s.trimStart().startsWith('<svg'), '<svg で始まっていません'),
-  v.check(s => s.trimEnd().endsWith('</svg>'), '</svg> で終わっていません'),
-  v.includes(
-    'viewBox="0 0 256 256"',
-    'viewBox を "0 0 256 256" にしてください',
-  ),
+  v.check(s => s.trimStart().startsWith('<svg'), 'Does not start with <svg'),
+  v.check(s => s.trimEnd().endsWith('</svg>'), 'Does not end with </svg>'),
+  v.includes('viewBox="0 0 256 256"', 'viewBox must be "0 0 256 256"'),
 );
 
-// テーマ付きアイコンの対応が正しいか検証する
+// Checks that themed icons come in Dark/Light pairs
 function checkThemes(icons) {
   const problems = [];
   const ids = Object.keys(icons);
@@ -38,14 +38,14 @@ function checkThemes(icons) {
     if (!theme) continue;
     const other = theme === 'dark' ? 'light' : 'dark';
     if (!ids.includes(`${base}-${other}`))
-      problems.push(`${id} に対応する ${base}-${other} がありません`);
+      problems.push(`${base}-${other} is missing for ${id}`);
     if (theme === 'dark' && ids.includes(base))
-      problems.push(`${base} はテーマ付きとテーマなしの両方があります`);
+      problems.push(`${base} exists both with and without themes`);
   }
   return problems;
 }
 
-// dist/icons.json の中身: { アイコン ID: SVG }
+// Content of dist/icons.json: { icon ID: SVG }
 const IconsSchema = v.pipe(
   v.record(IconIdSchema, SvgSchema),
   v.rawCheck(({ dataset, addIssue }) => {
@@ -54,38 +54,38 @@ const IconsSchema = v.pipe(
   }),
 );
 
-// icons.config.js の形だけを検証するスキーマ
+// Schema that only checks the shape of icons.config.js
 const IconsConfigShapeSchema = v.record(
   NameSchema,
   v.strictObject({
     aliases: v.optional(
-      v.pipe(v.array(NameSchema), v.minLength(1, 'aliases が空です')),
+      v.pipe(v.array(NameSchema), v.minLength(1, 'aliases is empty')),
     ),
     readmeId: v.optional(NameSchema),
   }),
 );
 
-// 実在するアイコンの正式名を受け取り、icons.config.js の中身まで検証するスキーマを作る
+// Creates a schema that also checks the content of icons.config.js against the existing icon names
 function createIconsConfigSchema(iconNames) {
   const names = new Set(iconNames);
   return v.pipe(
     IconsConfigShapeSchema,
     v.rawCheck(({ dataset, addIssue }) => {
       if (!dataset.typed) return;
-      const seen = new Map(); // 短縮名 → 正式名
+      const seen = new Map(); // short name -> canonical name
       for (const [name, { aliases = [], readmeId }] of Object.entries(
         dataset.value,
       )) {
         if (!names.has(name))
-          addIssue({ message: `${name} というアイコンはありません` });
+          addIssue({ message: `There is no icon named ${name}` });
         for (const alias of aliases) {
           if (names.has(alias))
             addIssue({
-              message: `${name} の短縮名 ${alias} は、同名のアイコンがあるので使えません`,
+              message: `Short name ${alias} of ${name} cannot be used because an icon has the same name`,
             });
           if (seen.has(alias))
             addIssue({
-              message: `短縮名 ${alias} が ${seen.get(alias)} と ${name} で重複しています`,
+              message: `Short name ${alias} is used by both ${seen.get(alias)} and ${name}`,
             });
           seen.set(alias, name);
         }
@@ -95,14 +95,14 @@ function createIconsConfigSchema(iconNames) {
           !aliases.includes(readmeId)
         )
           addIssue({
-            message: `${name} の readmeId ${readmeId} は、正式名か aliases のいずれかにしてください`,
+            message: `readmeId ${readmeId} of ${name} must be the canonical name or one of the aliases`,
           });
       }
     }),
   );
 }
 
-// アイコン ID の一覧から正式名の一覧を作る (テーマ違いは 1 つにまとめる)
+// Turns icon IDs into canonical names (theme variants become one name)
 const toIconNames = iconIds => [
   ...new Set(iconIds.map(id => id.split('-')[0])),
 ];

@@ -1,8 +1,8 @@
-// アイコンの名前の設定。キーは正式名 (icons/ のファイル名を小文字にして -Dark/-Light を除いたもの)。
-// 設定が必要なアイコンだけを書く。内容は build.js で schema.js のスキーマを使って検証される。
+// Name settings for icons. Keys are canonical names (the file name in icons/, lowercased, without -Dark/-Light).
+// Only list icons that need settings. build.js validates this file with the schemas in schema.js.
 //
-//   aliases:  API の i= で正式名の代わりに使える短縮名
-//   readmeId: readme のアイコン一覧に載せる ID (省略時は正式名)。正式名か aliases のいずれかにする
+//   aliases:  short names that can be used instead of the canonical name in the API's i=
+//   readmeId: the ID shown in the readme icon list (defaults to the canonical name). Must be the canonical name or one of the aliases
 module.exports = {
   aftereffects: { aliases: ['ae'], readmeId: 'ae' },
   antigravity: { aliases: ['geminicli'] },

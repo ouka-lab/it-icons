@@ -1,14 +1,14 @@
-// readme.md のアイコン一覧を icons/ と icons.config.js から生成する。
-// `bun run readme` で実行する (列幅は続けて実行する bun fmt が揃える)。
-// main に SVG か icons.config.js の変更が入ると、.github/workflows/readme.yml が実行して自動コミットする。
+// Generates the icon list in readme.md from icons/ and icons.config.js.
+// Run with `bun run readme` (bun fmt, which runs right after, aligns the columns).
+// When SVGs or icons.config.js change on main, .github/workflows/readme.yml runs it and commits the result.
 const fs = require('node:fs');
 const path = require('node:path');
 
 const MARKERS =
   /(<!-- ICONS-LIST:START[^>]*-->\n)[\s\S]*?(\n<!-- ICONS-LIST:END -->)/;
 
-// アイコン一覧の Markdown の表を作る。
-// 正式名の順に並べ、テーマ付きのアイコンは Dark の画像を載せる
+// Builds the Markdown table of icons,
+// sorted by canonical name, showing the Dark image for themed icons
 function renderIconsTable(files, config) {
   const fileByName = new Map();
   for (const file of files) {
@@ -27,13 +27,13 @@ function renderIconsTable(files, config) {
   return ['| Icon ID | Icon |', '| :-----: | :--: |', ...rows].join('\n');
 }
 
-// readme の目印の間を表に差し替える
+// Replaces the content between the markers in the readme with the table
 function replaceIconsTable(readme, table) {
   if (!MARKERS.test(readme))
     throw new Error(
-      'readme.md に <!-- ICONS-LIST:START --> と <!-- ICONS-LIST:END --> の目印がありません',
+      'readme.md has no <!-- ICONS-LIST:START --> and <!-- ICONS-LIST:END --> markers',
     );
-  // bun fmt が目印と表の間に空行を入れるので、最初から入れておく
+  // bun fmt puts blank lines between the markers and the table, so add them up front
   return readme.replace(
     MARKERS,
     (_, start, end) => `${start}\n${table}\n${end}`,
