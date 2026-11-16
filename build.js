@@ -61,3 +61,14 @@ fs.writeFileSync(
   './dist/builder.js',
   `module.exports = ${JSON.stringify(builderHtml)};\n`,
 );
+
+// The link preview image of /builder (og:image), served by the Worker at /builder/og.png.
+// Stored as base64 because the Worker is bundled without loader rules for binary files
+const ogImage = fs.readFileSync(
+  path.join(__dirname, '.github', 'eyecatch.png'),
+  'base64',
+);
+fs.writeFileSync(
+  './dist/og-image.js',
+  `module.exports = ${JSON.stringify(ogImage)};\n`,
+);

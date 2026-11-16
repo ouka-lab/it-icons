@@ -1,4 +1,6 @@
 const { describe, test, expect } = require('bun:test');
+const fs = require('node:fs');
+const path = require('node:path');
 const {
   icons,
   iconNameList,
@@ -209,6 +211,50 @@ describe('handleRequest', () => {
     expect(html.toLowerCase().startsWith('<!doctype html>')).toBe(true);
     // the icon catalog is embedded
     expect(html).toContain('"name":"javascript"');
+  });
+
+  test('GET /builder has meta tags for link previews, with absolute URLs built from the request origin', async () => {
+    const html = await (await get('/builder?i=js')).text();
+    const meta = (attr, name) =>
+      html.match(
+        // bun fmt may wrap long tags, so allow any whitespace between the attributes
+        new RegExp(`<meta\\s+${attr}="${name}"\\s+content="([^"]*)"`),
+      )?.[1];
+
+    expect(meta('name', 'description')).toBeTruthy();
+    expect(meta('property', 'og:title')).toBe('IT Icons Image Builder');
+    expect(meta('property', 'og:description')).toBe(
+      meta('name', 'description'),
+    );
+    expect(meta('property', 'og:type')).toBe('website');
+    expect(meta('property', 'og:url')).toBe('https://example.com/builder');
+    expect(meta('property', 'og:image')).toBe(
+      'https://example.com/builder/og.png',
+    );
+    expect(meta('property', 'og:image:width')).toBe('1280');
+    expect(meta('property', 'og:image:height')).toBe('640');
+    expect(meta('property', 'og:image:alt')).toBeTruthy();
+    expect(meta('name', 'twitter:card')).toBe('summary_large_image');
+  });
+
+  test('GET /builder uses the origin of each request in the meta tags', async () => {
+    const res = await handleRequest(
+      new Request('https://it-icons.example.dev/builder'),
+    );
+    expect(await res.text()).toMatch(
+      /<meta\s+property="og:image"\s+content="https:\/\/it-icons\.example\.dev\/builder\/og\.png"/,
+    );
+  });
+
+  test('GET /builder/og.png returns the eyecatch image (.github/eyecatch.png)', async () => {
+    const res = await get('/builder/og.png');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toBe('image/png');
+    expect(res.headers.get('cache-control')).toBe('public, max-age=86400');
+    const expected = fs.readFileSync(
+      path.join(__dirname, '..', '.github', 'eyecatch.png'),
+    );
+    expect(Buffer.from(await res.arrayBuffer()).equals(expected)).toBe(true);
   });
 
   // Forwarding loops back to this Worker where there is no origin (wrangler dev, workers.dev), and every

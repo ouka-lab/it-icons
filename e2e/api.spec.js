@@ -20,6 +20,26 @@ test.describe('unknown paths', () => {
   }
 });
 
+test.describe('link preview of /builder', () => {
+  test('og:image points to a PNG that the Worker serves', async ({
+    request,
+    baseURL,
+  }) => {
+    const html = await (await request.get('/builder')).text();
+    const image = html.match(
+      /<meta\s+property="og:image"\s+content="([^"]+)"/,
+    )?.[1];
+    expect(image).toBe(`${baseURL}/builder/og.png`);
+    const res = await request.get(image ?? '');
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toBe('image/png');
+    // PNG signature
+    expect([...(await res.body()).subarray(0, 8)]).toEqual([
+      0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+    ]);
+  });
+});
+
 test.describe('GET /api/svgs', () => {
   test('returns dist/icons.json as JSON', async ({ request }) => {
     const res = await request.get('/api/svgs');
