@@ -1,0 +1,60 @@
+name: Update readme
+
+# Regenerates the icon list in readme.md from icons/ and icons.config.js
+# (`bun run readme`) and commits it when main gets icon changes.
+#
+# It runs on push to main rather than on pull requests so that it also works
+# for PRs from forks, whose GITHUB_TOKEN cannot push. Pull requests are still
+# checked by test.yml: `bun run build` validates the icons and the config with
+# the valibot schemas in schema.js.
+#
+# Commits pushed with GITHUB_TOKEN do not trigger workflows, so this never
+# triggers itself.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'icons/**/*.svg'
+      - 'icons.config.js'
+
+permissions:
+  contents: read
+
+# Run one at a time so that each run starts from the latest main and pushes
+# on top of the previous run's commit.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  readme:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      # Check out the branch (not the event's commit) to get the latest main.
+      # The credentials are kept so that the commit can be pushed.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - run: bun install --frozen-lockfile
+
+      - run: bun run build
+
+      - run: bun run readme
+
+      - name: Commit and push if the readme changed
+        run: |
+          if git diff --quiet readme.md; then
+            echo "readme.md is up to date"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add readme.md
+          git commit -m 'docs: update icons list'
+          git push

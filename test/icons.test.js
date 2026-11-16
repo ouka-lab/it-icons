@@ -1,63 +1,65 @@
-// icons/ と readme のアイコン一覧の整合性を検証する
+// 実際の icons/ と icons.config.js がスキーマを満たすこと、readme のアイコン一覧が正しく生成されることを検証する
 const { describe, test, expect } = require('bun:test');
 const fs = require('node:fs');
 const path = require('node:path');
+const v = require('valibot');
+const {
+  IconsSchema,
+  createIconsConfigSchema,
+  toIconNames,
+} = require('../schema');
 const { iconNameList, parseShortNames } = require('../lib');
+const { renderIconsTable, replaceIconsTable } = require('../scripts/readme');
+const config = require('../icons.config');
 
 const root = path.join(__dirname, '..');
 const files = fs.readdirSync(path.join(root, 'icons'));
-const names = files.map(f => f.replace(/\.svg$/, '').toLowerCase());
+const icons = Object.fromEntries(
+  files.map(f => [
+    f.replace(/\.svg$/, '').toLowerCase(),
+    fs.readFileSync(path.join(root, 'icons', f), 'utf8'),
+  ]),
+);
+
+// 失敗したときに理由が読めるよう、issues を文字列にして比べる
+const issuesOf = (schema, input) => {
+  const result = v.safeParse(schema, input);
+  return result.success ? '' : v.summarize(result.issues);
+};
 
 describe('icons/', () => {
   test('すべて .svg ファイル', () => {
     expect(files.filter(f => !f.endsWith('.svg'))).toEqual([]);
   });
 
-  test('ファイル名は "<英数字>" か "<英数字>-Dark|Light" の形式', () => {
-    // index.js は "-" で区切ってテーマを判定するため、それ以外の "-" は使えない
-    expect(names.filter(n => !/^[a-z0-9]+(-(dark|light))?$/.test(n))).toEqual(
-      [],
-    );
-  });
-
   test('大文字小文字を無視してもファイル名が重複しない', () => {
-    expect(names.filter((n, i) => names.indexOf(n) !== i)).toEqual([]);
+    expect(Object.keys(icons).length).toBe(files.length);
   });
 
-  test('テーマ付きのアイコンは Dark と Light が揃っていて、テーマなし版がない', () => {
-    const problems = [];
-    for (const n of names) {
-      const [base, theme] = n.split('-');
-      if (!theme) continue;
-      const other = theme === 'dark' ? 'light' : 'dark';
-      if (!names.includes(`${base}-${other}`))
-        problems.push(`${base}-${other} がない`);
-      if (names.includes(base)) problems.push(`${base} が重複している`);
-    }
-    expect(problems).toEqual([]);
+  test('IconsSchema を満たす', () => {
+    expect(issuesOf(IconsSchema, icons)).toBe('');
   });
+});
 
-  test('中身は 256x256 の SVG', () => {
-    const invalid = files.filter(f => {
-      const svg = fs.readFileSync(path.join(root, 'icons', f), 'utf8');
-      return !(
-        svg.trimStart().startsWith('<svg') &&
-        svg.includes('viewBox="0 0 256 256"') &&
-        svg.trimEnd().endsWith('</svg>')
-      );
-    });
-    expect(invalid).toEqual([]);
+describe('icons.config.js', () => {
+  test('スキーマを満たす', () => {
+    const schema = createIconsConfigSchema(toIconNames(Object.keys(icons)));
+    expect(issuesOf(schema, config)).toBe('');
   });
 });
 
 describe('readme のアイコン一覧', () => {
-  const readme = fs.readFileSync(path.join(root, 'readme.md'), 'utf8');
+  const table = renderIconsTable(files, config);
   const rows = [
-    ...readme.matchAll(/^\|\s*`([^`]+)`\s*\|\s*<img src="\.\/([^"]+)"/gm),
+    ...table.matchAll(/^\|\s*`([^`]+)`\s*\|\s*<img src="\.\/([^"]+)"/gm),
   ].map(m => ({ id: m[1], src: m[2] }));
 
-  test('一覧が読み取れる', () => {
-    expect(rows.length).toBeGreaterThan(0);
+  test('すべてのアイコンが 1 行ずつ載る', () => {
+    expect(rows.length).toBe(iconNameList.length);
+    const names = rows.map(r =>
+      parseShortNames([r.id])[0]?.replace(/-(dark|light)$/, ''),
+    );
+    expect([...names].sort()).toEqual([...iconNameList].sort());
   });
 
   test('載っている名前はすべて API で使える', () => {
@@ -66,17 +68,26 @@ describe('readme のアイコン一覧', () => {
     ).toEqual([]);
   });
 
-  test('画像ファイルがすべて存在する', () => {
+  test('画像ファイルがすべて存在し、テーマ付きは Dark を使う', () => {
     expect(
       rows.filter(r => !fs.existsSync(path.join(root, r.src))).map(r => r.src),
     ).toEqual([]);
+    expect(rows.filter(r => /-Light\.svg$/.test(r.src))).toEqual([]);
   });
 
-  test('すべてのアイコンが載っている', () => {
-    // readme には別名 (js など) で載っているものがあるので正式名に変換して比べる
-    const ids = new Set(
-      rows.map(r => parseShortNames([r.id])[0]?.replace(/-(dark|light)$/, '')),
+  test('正式名の順に並ぶ', () => {
+    const names = rows.map(r =>
+      r.src.replace(/^icons\/|(-Dark)?\.svg$/g, '').toLowerCase(),
     );
-    expect(iconNameList.filter(n => !ids.has(n))).toEqual([]);
+    expect(names).toEqual([...names].sort());
+  });
+
+  test('readme.md に差し替え用の目印がある', () => {
+    const readme = fs.readFileSync(path.join(root, 'readme.md'), 'utf8');
+    expect(() => replaceIconsTable(readme, table)).not.toThrow();
+  });
+
+  test('目印がないとエラーになる', () => {
+    expect(() => replaceIconsTable('# readme', table)).toThrow();
   });
 });
