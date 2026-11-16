@@ -1,48 +1,11 @@
 const icons = require('./dist/icons.json');
 const iconNameList = [...new Set(Object.keys(icons).map(i => i.split('-')[0]))];
-const shortNames = {
-  js: 'javascript',
-  ts: 'typescript',
-  py: 'python',
-  tailwind: 'tailwindcss',
-  vue: 'vuejs',
-  nuxt: 'nuxtjs',
-  go: 'golang',
-  cf: 'cloudflare',
-  wasm: 'webassembly',
-  postgres: 'postgresql',
-  k8s: 'kubernetes',
-  next: 'nextjs',
-  mongo: 'mongodb',
-  md: 'markdown',
-  ps: 'photoshop',
-  ai: 'illustrator',
-  pr: 'premiere',
-  ae: 'aftereffects',
-  scss: 'sass',
-  sc: 'scala',
-  net: 'dotnet',
-  gatsbyjs: 'gatsby',
-  gql: 'graphql',
-  vlang: 'v',
-  amazonwebservices: 'aws',
-  bots: 'discordbots',
-  express: 'expressjs',
-  googlecloud: 'gcp',
-  mui: 'materialui',
-  windi: 'windicss',
-  unreal: 'unrealengine',
-  nest: 'nestjs',
-  ktorio: 'ktor',
-  pwsh: 'powershell',
-  au: 'audition',
-  rollup: 'rollupjs',
-  rxjs: 'reactivex',
-  rxjava: 'reactivex',
-  ghactions: 'githubactions',
-  sklearn: 'scikitlearn',
-  geminicli: 'antigravity',
-};
+// 短縮名 → 正式名。名前の設定は icons.config.js で管理している
+const shortNames = Object.fromEntries(
+  Object.entries(require('./icons.config')).flatMap(
+    ([name, { aliases = [] }]) => aliases.map(alias => [alias, name]),
+  ),
+);
 const themedIcons = [
   ...Object.keys(icons)
     .filter(i => i.includes('-light') || i.includes('-dark'))
