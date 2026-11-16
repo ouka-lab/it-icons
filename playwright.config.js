@@ -1,12 +1,12 @@
 // @ts-check
-const { defineConfig } = require('@playwright/test');
+const { defineConfig, devices } = require('@playwright/test');
 
 const PORT = 8787;
 const baseURL = `http://127.0.0.1:${PORT}`;
 
 module.exports = defineConfig({
   testDir: './e2e',
-  // スナップショット名に OS / ブラウザ名を含めず、macOS と CI (Linux) で同じファイルを共有する
+  // Leave the OS / browser name out of snapshot names so that macOS and CI (Linux) share the same files
   snapshotPathTemplate: '{testDir}/__snapshots__/{testFilePath}/{arg}{ext}',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -15,8 +15,15 @@ module.exports = defineConfig({
   use: {
     baseURL,
   },
+  // e2e/builder.spec.js drives the page in a browser, so use Chromium (the API tests only use request)
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'], baseURL },
+    },
+  ],
   webServer: {
-    // dist/icons.json をビルドしてから Worker をローカル (workerd) で起動する。Cloudflare へのログインは不要
+    // Build dist/icons.json, then start the Worker locally (workerd). No Cloudflare login is needed
     command: `npm run dev -- --port ${PORT} --ip 127.0.0.1`,
     url: `${baseURL}/api/icons`,
     reuseExistingServer: !process.env.CI,

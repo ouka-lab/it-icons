@@ -1,4 +1,4 @@
-// build.js が icons/ と icons.config.js を検証して dist/icons.json を生成することを、一時ディレクトリで検証する
+// Checks, in a temporary directory, that build.js validates icons/ and icons.config.js and writes dist/
 const { test, expect, afterAll } = require('bun:test');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -12,7 +12,7 @@ afterAll(() => {
   for (const dir of dirs) fs.rmSync(dir, { recursive: true, force: true });
 });
 
-// icons/ に files を置き、icons.config.js を書いた一時ディレクトリで build.js を実行する
+// Runs build.js in a temporary directory with the given files in icons/ and the given icons.config.js
 function build(files, config = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'it-icons-build-'));
   dirs.push(dir);
@@ -25,10 +25,12 @@ function build(files, config = {}) {
   );
   const result = Bun.spawnSync([process.execPath, buildScript], { cwd: dir });
   const out = path.join(dir, 'dist', 'icons.json');
+  const builder = path.join(dir, 'dist', 'builder.js');
   return {
     exitCode: result.exitCode,
     stderr: result.stderr.toString(),
     json: fs.existsSync(out) ? JSON.parse(fs.readFileSync(out, 'utf8')) : null,
+    builderHtml: fs.existsSync(builder) ? require(builder) : null,
   };
 }
 
@@ -38,7 +40,7 @@ const validIcons = {
   'Bar.svg': svg('bar'),
 };
 
-test('ファイル名を小文字にしたキーで SVG をまとめた JSON を出力する', () => {
+test('writes a JSON of the SVGs keyed by lowercased file name', () => {
   const result = build(validIcons, { foo: { aliases: ['f'] } });
   expect(result.exitCode).toBe(0);
   expect(result.json).toEqual({
@@ -48,28 +50,55 @@ test('ファイル名を小文字にしたキーで SVG をまとめた JSON を
   });
 });
 
+test('writes the Image Builder HTML to dist/builder.js with the catalog built from icons/ and icons.config.js', () => {
+  const result = build(validIcons, { foo: { aliases: ['f'] } });
+  expect(result.exitCode).toBe(0);
+  expect(typeof result.builderHtml).toBe('string');
+  expect(result.builderHtml.toLowerCase().startsWith('<!doctype html>')).toBe(
+    true,
+  );
+  expect(result.builderHtml).toContain(
+    '{"id":"bar","name":"bar","label":"Bar"}',
+  );
+  expect(result.builderHtml).toContain(
+    '{"id":"foo","name":"foo","label":"Foo","aliases":["f"],"themed":true}',
+  );
+});
+
 test.each([
-  ['viewBox が 256x256 でない SVG', { 'Bar.svg': '<svg>bar</svg>' }, {}],
-  ['SVG でないファイル', { 'Bar.svg': 'bar' }, {}],
-  ['"-" を含むファイル名', { 'Foo-Bar.svg': svg('x') }, {}],
-  ['Light がない Dark', { 'Foo-Dark.svg': svg('dark') }, {}],
+  ['an SVG whose viewBox is not 256x256', { 'Bar.svg': '<svg>bar</svg>' }, {}],
+  ['a file that is not an SVG', { 'Bar.svg': 'bar' }, {}],
+  ['a file name containing "-"', { 'Foo-Bar.svg': svg('x') }, {}],
+  ['a Dark icon without Light', { 'Foo-Dark.svg': svg('dark') }, {}],
   [
-    'テーマ付きとテーマなしの両方がある',
+    'an icon both with and without themes',
     { ...validIcons, 'Foo.svg': svg('foo') },
     {},
   ],
-  ['存在しないアイコンの設定', validIcons, { baz: { aliases: ['b'] } }],
-  ['アイコン名と同じ短縮名', validIcons, { foo: { aliases: ['bar'] } }],
+  ['settings for an unknown icon', validIcons, { baz: { aliases: ['b'] } }],
   [
-    '重複した短縮名',
+    'a short name equal to an icon name',
+    validIcons,
+    { foo: { aliases: ['bar'] } },
+  ],
+  [
+    'a duplicated short name',
     validIcons,
     { foo: { aliases: ['x'] }, bar: { aliases: ['x'] } },
   ],
-  ['短縮名でない readmeId', validIcons, { foo: { readmeId: 'f' } }],
-  ['未知の設定項目', validIcons, { foo: { alias: ['f'] } }],
-])('%s があるとエラーで終わり、JSON を出力しない', (_, files, config) => {
-  const result = build(files, config);
-  expect(result.exitCode).not.toBe(0);
-  expect(result.stderr).toContain('✖');
-  expect(result.json).toBeNull();
-});
+  [
+    'a readmeId that is not a short name',
+    validIcons,
+    { foo: { readmeId: 'f' } },
+  ],
+  ['an unknown setting', validIcons, { foo: { alias: ['f'] } }],
+])(
+  'exits with an error and writes neither JSON nor HTML when there is %s',
+  (_, files, config) => {
+    const result = build(files, config);
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('✖');
+    expect(result.json).toBeNull();
+    expect(result.builderHtml).toBeNull();
+  },
+);

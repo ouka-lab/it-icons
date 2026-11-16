@@ -11,7 +11,7 @@ const {
 
 const get = path => handleRequest(new Request(`https://example.com${path}`));
 
-// generateSvg が各アイコンを包む <g> の translate 座標を取り出す
+// Extracts the translate coordinates of the <g> that generateSvg wraps around each icon
 const positions = svg =>
   [...svg.matchAll(/<g transform="translate\((\d+), (\d+)\)">/g)].map(m => [
     Number(m[1]),
@@ -22,7 +22,7 @@ const svgAttrs = svg => {
   const m = svg.match(
     /<svg width="([^"]+)" height="([^"]+)" viewBox="0 0 ([^ ]+) ([^"]+)"/,
   );
-  if (!m) throw new Error('svg 要素が見つかりません');
+  if (!m) throw new Error('svg element not found');
   return {
     width: Number(m[1]),
     height: Number(m[2]),
@@ -32,43 +32,43 @@ const svgAttrs = svg => {
 };
 
 describe('iconNameList / themedIcons', () => {
-  test('テーマ違いは "-dark" / "-light" を除いた 1 つの名前にまとめられる', () => {
+  test('theme variants are merged into one name without "-dark" / "-light"', () => {
     expect(iconNameList).toContain('java');
     expect(iconNameList).not.toContain('java-dark');
     expect(iconNameList).not.toContain('java-light');
     expect(new Set(iconNameList).size).toBe(iconNameList.length);
   });
 
-  test('themedIcons にはテーマ付きのアイコンだけが含まれる', () => {
+  test('themedIcons only contains themed icons', () => {
     expect(themedIcons).toContain('java');
     for (const name of themedIcons) {
       expect(icons[`${name}-dark`]).toBeString();
       expect(icons[`${name}-light`]).toBeString();
     }
-    // テーマなしのアイコン
+    // an icon without themes
     expect(icons.adonis).toBeString();
     expect(themedIcons).not.toContain('adonis');
   });
 });
 
 describe('parseShortNames', () => {
-  test('テーマなしのアイコンは名前そのまま', () => {
+  test('an icon without themes keeps its name', () => {
     expect(parseShortNames(['adonis'])).toEqual(['adonis']);
   });
 
-  test('テーマ付きのアイコンは既定で -dark が付く', () => {
+  test('a themed icon gets -dark by default', () => {
     expect(parseShortNames(['java'])).toEqual(['java-dark']);
     expect(parseShortNames(['java'], undefined)).toEqual(['java-dark']);
   });
 
-  test('theme を指定するとそのテーマが付く', () => {
+  test('a given theme is appended', () => {
     expect(parseShortNames(['java', 'adonis'], 'light')).toEqual([
       'java-light',
       'adonis',
     ]);
   });
 
-  test('別名は正式名に変換され、テーマも反映される', () => {
+  test('short names are converted to canonical names, with the theme applied', () => {
     expect(parseShortNames(['js', 'k8s'])).toEqual(
       parseShortNames(['javascript', 'kubernetes']),
     );
@@ -77,7 +77,7 @@ describe('parseShortNames', () => {
     );
   });
 
-  test('順序と重複は入力のまま保たれる', () => {
+  test('order and duplicates are kept as given', () => {
     expect(parseShortNames(['adonis', 'java', 'adonis'])).toEqual([
       'adonis',
       'java-dark',
@@ -85,7 +85,7 @@ describe('parseShortNames', () => {
     ]);
   });
 
-  test('[現状の挙動] 存在しない名前は undefined になる', () => {
+  test('[current behavior] an unknown name becomes undefined', () => {
     expect(parseShortNames(['java', 'no-such-icon'])).toEqual([
       'java-dark',
       undefined,
@@ -94,7 +94,7 @@ describe('parseShortNames', () => {
 });
 
 describe('generateSvg', () => {
-  test('アイコン 1 個は 48px 四方で viewBox は 256', () => {
+  test('one icon is 48px square with a 256 viewBox', () => {
     const svg = generateSvg(['adonis'], 15);
     expect(svgAttrs(svg)).toEqual({
       width: 48,
@@ -105,7 +105,7 @@ describe('generateSvg', () => {
     expect(svg).toContain(icons.adonis);
   });
 
-  test('アイコンは 300 間隔で並び、perLine 個で折り返す', () => {
+  test('icons are placed every 300 units and wrap after perLine icons', () => {
     const svg = generateSvg(Array(5).fill('adonis'), 2);
     expect(positions(svg)).toEqual([
       [0, 0],
@@ -120,7 +120,7 @@ describe('generateSvg', () => {
     });
   });
 
-  test('アイコン数が perLine より少なければ幅はアイコン数で決まる', () => {
+  test('with fewer icons than perLine, the width depends on the icon count', () => {
     const svg = generateSvg(['adonis', 'adonis'], 15);
     expect(svgAttrs(svg)).toEqual({
       width: (2 * 300 - 44) * (48 / 256),
@@ -130,13 +130,13 @@ describe('generateSvg', () => {
     });
   });
 
-  test('perLine はクエリ文字列のままでも数値として扱われる', () => {
+  test('perLine works even as a query string', () => {
     expect(generateSvg(Array(3).fill('adonis'), '2')).toBe(
       generateSvg(Array(3).fill('adonis'), 2),
     );
   });
 
-  test('アイコンは指定した順に埋め込まれる', () => {
+  test('icons are embedded in the given order', () => {
     const svg = generateSvg(['adonis', 'java-dark'], 15);
     expect(svg.indexOf(icons.adonis)).toBeLessThan(
       svg.indexOf(icons['java-dark']),
@@ -145,7 +145,7 @@ describe('generateSvg', () => {
 });
 
 describe('handleRequest', () => {
-  test('GET /icons は SVG を返す', async () => {
+  test('GET /icons returns an SVG', async () => {
     const res = await get('/icons?i=java,adonis&theme=light&perline=1');
     expect(res.status).toBe(200);
     expect(res.headers.get('content-type')).toBe('image/svg+xml');
@@ -154,13 +154,13 @@ describe('handleRequest', () => {
     );
   });
 
-  test('パラメータの短縮形 (icons, t) と末尾スラッシュを受け付ける', async () => {
+  test('accepts the parameter aliases (icons, t) and a trailing slash', async () => {
     const a = await (await get('/icons?i=java&theme=light')).text();
     const b = await (await get('/icons/?icons=java&t=light')).text();
     expect(b).toBe(a);
   });
 
-  test('i=all ですべてのアイコンを並べる', async () => {
+  test('i=all shows every icon', async () => {
     const svg = await (await get('/icons?i=all')).text();
     expect(positions(svg)).toHaveLength(iconNameList.length);
   });
@@ -185,7 +185,7 @@ describe('handleRequest', () => {
     expect(await res.text()).toBe(message);
   });
 
-  test('GET /api/icons はアイコン名の一覧を返す', async () => {
+  test('GET /api/icons returns the list of icon names', async () => {
     const res = await get('/api/icons');
     expect(res.headers.get('content-type')).toBe(
       'application/json;charset=UTF-8',
@@ -193,24 +193,51 @@ describe('handleRequest', () => {
     expect(await res.json()).toEqual(iconNameList);
   });
 
-  test('GET /api/svgs はすべての SVG を返す', async () => {
+  test('GET /api/svgs returns every SVG', async () => {
     const res = await get('/api/svgs');
     expect(res.headers.get('content-type')).toBe(
       'application/json;charset=UTF-8',
     );
     expect(await res.json()).toEqual(icons);
   });
+
+  test('GET /builder returns the Image Builder HTML', async () => {
+    const res = await get('/builder');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toBe('text/html; charset=utf-8');
+    const html = await res.text();
+    expect(html.toLowerCase().startsWith('<!doctype html>')).toBe(true);
+    // the icon catalog is embedded
+    expect(html).toContain('"name":"javascript"');
+  });
+
+  // Forwarding loops back to this Worker where there is no origin (wrangler dev, workers.dev), and every
+  // /favicon.ico request from the browser made the icon images loading at the same time fail
+  test.each(['/favicon.ico', '/', '/unknown'])(
+    'unknown path %s returns 404 instead of being forwarded',
+    async path => {
+      const res = await get(path);
+      expect(res.status).toBe(404);
+      expect(await res.text()).toBe('Not Found');
+    },
+  );
+
+  test('GET /builder returns the same HTML with a trailing slash or a query (the page builds its initial state from the URL)', async () => {
+    const html = await (await get('/builder')).text();
+    expect(await (await get('/builder/')).text()).toBe(html);
+    expect(await (await get('/builder?i=js&theme=light')).text()).toBe(html);
+  });
 });
 
 describe('shortNames', () => {
-  test('別名の変換先はすべて実在するアイコン', () => {
+  test('every short name points to an existing icon', () => {
     const missing = Object.values(shortNames).filter(
       name => !iconNameList.includes(name),
     );
     expect(missing).toEqual([]);
   });
 
-  test('別名が実在するアイコン名と重複していない (重複すると別名が使われない)', () => {
+  test('no short name equals an existing icon name (otherwise the short name would never be used)', () => {
     const shadowed = Object.keys(shortNames).filter(name =>
       iconNameList.includes(name),
     );

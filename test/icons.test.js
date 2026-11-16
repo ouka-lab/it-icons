@@ -1,4 +1,4 @@
-// 実際の icons/ と icons.config.js がスキーマを満たすこと、readme のアイコン一覧が正しく生成されることを検証する
+// Checks that the actual icons/ and icons.config.js satisfy the schemas and that the readme icon list is generated correctly
 const { describe, test, expect } = require('bun:test');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -21,40 +21,40 @@ const icons = Object.fromEntries(
   ]),
 );
 
-// 失敗したときに理由が読めるよう、issues を文字列にして比べる
+// Compare the issues as a string so that failures show the reason
 const issuesOf = (schema, input) => {
   const result = v.safeParse(schema, input);
   return result.success ? '' : v.summarize(result.issues);
 };
 
 describe('icons/', () => {
-  test('すべて .svg ファイル', () => {
+  test('contains only .svg files', () => {
     expect(files.filter(f => !f.endsWith('.svg'))).toEqual([]);
   });
 
-  test('大文字小文字を無視してもファイル名が重複しない', () => {
+  test('has no duplicate file names, ignoring case', () => {
     expect(Object.keys(icons).length).toBe(files.length);
   });
 
-  test('IconsSchema を満たす', () => {
+  test('satisfies IconsSchema', () => {
     expect(issuesOf(IconsSchema, icons)).toBe('');
   });
 });
 
 describe('icons.config.js', () => {
-  test('スキーマを満たす', () => {
+  test('satisfies the schema', () => {
     const schema = createIconsConfigSchema(toIconNames(Object.keys(icons)));
     expect(issuesOf(schema, config)).toBe('');
   });
 });
 
-describe('readme のアイコン一覧', () => {
+describe('readme icon list', () => {
   const table = renderIconsTable(files, config);
   const rows = [
     ...table.matchAll(/^\|\s*`([^`]+)`\s*\|\s*<img src="\.\/([^"]+)"/gm),
   ].map(m => ({ id: m[1], src: m[2] }));
 
-  test('すべてのアイコンが 1 行ずつ載る', () => {
+  test('lists every icon once', () => {
     expect(rows.length).toBe(iconNameList.length);
     const names = rows.map(r =>
       parseShortNames([r.id])[0]?.replace(/-(dark|light)$/, ''),
@@ -62,32 +62,32 @@ describe('readme のアイコン一覧', () => {
     expect([...names].sort()).toEqual([...iconNameList].sort());
   });
 
-  test('載っている名前はすべて API で使える', () => {
+  test('every listed name works in the API', () => {
     expect(
       rows.filter(r => parseShortNames([r.id])[0] === undefined).map(r => r.id),
     ).toEqual([]);
   });
 
-  test('画像ファイルがすべて存在し、テーマ付きは Dark を使う', () => {
+  test('every image file exists, and themed icons use Dark', () => {
     expect(
       rows.filter(r => !fs.existsSync(path.join(root, r.src))).map(r => r.src),
     ).toEqual([]);
     expect(rows.filter(r => /-Light\.svg$/.test(r.src))).toEqual([]);
   });
 
-  test('正式名の順に並ぶ', () => {
+  test('is sorted by canonical name', () => {
     const names = rows.map(r =>
       r.src.replace(/^icons\/|(-Dark)?\.svg$/g, '').toLowerCase(),
     );
     expect(names).toEqual([...names].sort());
   });
 
-  test('readme.md に差し替え用の目印がある', () => {
+  test('readme.md has the markers to replace', () => {
     const readme = fs.readFileSync(path.join(root, 'readme.md'), 'utf8');
     expect(() => replaceIconsTable(readme, table)).not.toThrow();
   });
 
-  test('目印がないとエラーになる', () => {
+  test('throws without the markers', () => {
     expect(() => replaceIconsTable('# readme', table)).toThrow();
   });
 });

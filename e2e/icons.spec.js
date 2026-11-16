@@ -9,8 +9,8 @@ async function getSvg(request, query) {
   return res.text();
 }
 
-// generateSvg が各アイコンを包む <g> を数える。
-// アイコン自体の SVG にも translate を使う <g> があるので、"整数, 整数" の形式に限定する
+// Counts the <g> elements that generateSvg wraps around each icon.
+// Icon SVGs themselves also use <g> with translate, so only match the "integer, integer" form
 const countIcons = svg =>
   (svg.match(/<g transform="translate\(\d+, \d+\)">/g) || []).length;
 
@@ -18,13 +18,13 @@ const svgSize = svg => {
   const m = svg.match(
     /<svg width="([^"]+)" height="([^"]+)" viewBox="0 0 ([^ ]+) ([^"]+)"/,
   );
-  if (!m) throw new Error('svg 要素が見つかりません');
+  if (!m) throw new Error('svg element not found');
   return { width: m[1], height: m[2], viewW: m[3], viewH: m[4] };
 };
 
-test.describe('GET /icons: 出力される SVG', () => {
-  // 生成される SVG 全体をスナップショットで固定する。
-  // アイコンの SVG を意図的に変更したときは `bun run test:e2e --update-snapshots` で更新する。
+test.describe('GET /icons: generated SVG', () => {
+  // Pins the whole generated SVG with snapshots.
+  // After intentionally changing icon SVGs, update them with `bun run test:e2e --update-snapshots`.
   const cases = [
     ['single', 'i=java'],
     ['multiple', 'i=java,kotlin,nodejs,figma'],
@@ -37,7 +37,7 @@ test.describe('GET /icons: 出力される SVG', () => {
     });
   }
 
-  test('アイコンのサイズは 1 個 48px で、既定では 1 行 15 個まで並ぶ', async ({
+  test('each icon is 48px and a line holds up to 15 icons by default', async ({
     request,
   }) => {
     expect(svgSize(await getSvg(request, 'i=java'))).toEqual({
@@ -50,7 +50,7 @@ test.describe('GET /icons: 出力される SVG', () => {
     const names = Array(16).fill('java').join(',');
     const svg = await getSvg(request, `i=${names}`);
     expect(countIcons(svg)).toBe(16);
-    // 15 個で折り返して 2 行になる
+    // wraps after 15 icons into 2 lines
     expect(svgSize(svg)).toEqual({
       width: String((15 * 300 - 44) * (48 / 256)),
       height: String((2 * 300 - 44) * (48 / 256)),
@@ -59,7 +59,7 @@ test.describe('GET /icons: 出力される SVG', () => {
     });
   });
 
-  test('perline で 1 行あたりの個数を変えられる', async ({ request }) => {
+  test('perline changes the number of icons per line', async ({ request }) => {
     const svg = await getSvg(request, 'i=java,kotlin,nodejs,figma&perline=3');
     expect(svgSize(svg)).toMatchObject({
       viewW: String(3 * 300 - 44),
@@ -68,7 +68,7 @@ test.describe('GET /icons: 出力される SVG', () => {
     expect(svg).toContain('<g transform="translate(0, 300)">');
   });
 
-  test('テーマ未指定時は dark を使う', async ({ request }) => {
+  test('uses dark when no theme is given', async ({ request }) => {
     const def = await getSvg(request, 'i=java');
     const dark = await getSvg(request, 'i=java&theme=dark');
     const light = await getSvg(request, 'i=java&theme=light');
@@ -76,7 +76,7 @@ test.describe('GET /icons: 出力される SVG', () => {
     expect(def).not.toBe(light);
   });
 
-  test('パラメータの短縮形 (icons → i, theme → t) が使える', async ({
+  test('accepts the parameter aliases (icons for i, t for theme)', async ({
     request,
   }) => {
     expect(await getSvg(request, 'icons=java,kotlin&t=light')).toBe(
@@ -84,7 +84,7 @@ test.describe('GET /icons: 出力される SVG', () => {
     );
   });
 
-  test('アイコン名の別名 (js, ts, py, k8s など) は正式名と同じ SVG になる', async ({
+  test('short names (js, ts, py, k8s, ...) give the same SVG as the canonical names', async ({
     request,
   }) => {
     expect(await getSvg(request, 'i=js,ts,py,k8s,tailwind')).toBe(
@@ -93,25 +93,25 @@ test.describe('GET /icons: 出力される SVG', () => {
         'i=javascript,typescript,python,kubernetes,tailwindcss',
       ),
     );
-    // テーマ付きアイコンへの別名にもテーマが反映される
+    // the theme also applies to short names of themed icons
     expect(await getSvg(request, 'i=next&theme=light')).toBe(
       await getSvg(request, 'i=nextjs&theme=light'),
     );
   });
 
-  test('i=all ですべてのアイコンを並べる', async ({ request }) => {
+  test('i=all shows every icon', async ({ request }) => {
     const names = await (await request.get('/api/icons')).json();
     const svg = await getSvg(request, 'i=all');
     expect(countIcons(svg)).toBe(names.length);
   });
 
-  test('末尾のスラッシュがあっても同じ結果を返す', async ({ request }) => {
+  test('returns the same result with a trailing slash', async ({ request }) => {
     const res = await request.get('/icons/?i=java');
     expect(res.status()).toBe(200);
     expect(await res.text()).toBe(await getSvg(request, 'i=java'));
   });
 
-  test('[現状の挙動] 存在しないアイコン名はエラーにならず "undefined" が埋め込まれる', async ({
+  test('[current behavior] an unknown icon name is not an error and embeds "undefined"', async ({
     request,
   }) => {
     const svg = await getSvg(request, 'i=java,no-such-icon');
@@ -122,7 +122,7 @@ test.describe('GET /icons: 出力される SVG', () => {
   });
 });
 
-test.describe('GET /icons: エラー', () => {
+test.describe('GET /icons: errors', () => {
   const cases = [
     ['', "You didn't specify any icons!"],
     ['i=', "You didn't specify any icons!"],

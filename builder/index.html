@@ -1,0 +1,247 @@
+<!doctype html>
+<!--
+  Template of the Image Builder page. build.js fills in the following and writes dist/builder.js,
+  which the Worker (lib.js) serves at /builder.
+    __LOGO_SRC__        data URI of builder/logo.png (the "IT Icons" part of .github/eyecatch.png)
+    BUILD:STYLE         builder/style.css
+    BUILD:SCRIPTS       the icon catalog and builder/messages.js, core.js, app.js
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>IT Icons Image Builder</title>
+    <!-- BUILD:STYLE -->
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="brand" href="/builder">
+          <h1>
+            <img src="__LOGO_SRC__" alt="IT Icons" width="660" height="148" />
+          </h1>
+        </a>
+        <div class="header-actions">
+          <div class="lang" role="radiogroup" data-i18n-aria="language">
+            <label><input type="radio" name="lang" value="en" />EN</label>
+            <label><input type="radio" name="lang" value="ja" />JA</label>
+          </div>
+          <a
+            class="icon-link"
+            href="https://github.com/ouka-lab/it-icons"
+            data-i18n-aria="github"
+          >
+            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path
+                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Preview -->
+      <section class="card preview" aria-labelledby="preview-title">
+        <div class="preview__head">
+          <h2 id="preview-title" data-i18n="preview"></h2>
+          <div class="preview__actions">
+            <span class="badge" id="stale" data-i18n="stale" hidden></span>
+            <button
+              type="button"
+              class="primary icon-button"
+              id="preview-btn"
+              data-i18n-aria="updatePreview"
+              data-i18n-title="updatePreview"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"
+                />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div
+          class="preview__stage"
+          id="preview-stage"
+          data-testid="preview-stage"
+          data-bg="dark"
+        >
+          <img id="preview-img" data-i18n-alt="preview" hidden />
+          <p id="preview-empty" data-i18n="previewEmpty" hidden></p>
+        </div>
+      </section>
+
+      <!-- Code for the README -->
+      <section class="card output" aria-labelledby="output-title">
+        <div class="output__head">
+          <h2 id="output-title" data-i18n="outputTitle"></h2>
+          <div class="segmented" role="radiogroup" data-i18n-aria="format">
+            <label
+              ><input
+                type="radio"
+                name="format"
+                value="md"
+                checked
+              />Markdown</label
+            >
+            <label><input type="radio" name="format" value="html" />HTML</label>
+          </div>
+        </div>
+        <textarea
+          id="output"
+          readonly
+          aria-labelledby="output-title"
+        ></textarea>
+        <div class="copy">
+          <span class="tip" role="status" id="copy-tip"></span>
+          <button
+            type="button"
+            class="icon-button"
+            id="copy-btn"
+            data-i18n-aria="copy"
+            data-i18n-title="copy"
+          >
+            <svg class="icon-idle" viewBox="0 0 24 24" aria-hidden="true">
+              <rect width="8" height="4" x="8" y="2" rx="1" />
+              <path
+                d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+              />
+            </svg>
+            <svg class="icon-done" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- Inputs -->
+      <section class="card inputs" data-i18n-aria="options">
+        <p class="notice" id="ignored" hidden></p>
+
+        <div class="options">
+          <fieldset>
+            <legend data-i18n="theme"></legend>
+            <div class="radios">
+              <label class="check"
+                ><input type="radio" name="theme" value="dark" checked /><span
+                  data-i18n="dark"
+                ></span
+              ></label>
+              <label class="check"
+                ><input type="radio" name="theme" value="light" /><span
+                  data-i18n="light"
+                ></span
+              ></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend data-i18n="perline"></legend>
+            <div class="perline">
+              <input
+                type="range"
+                id="perline-range"
+                min="1"
+                max="50"
+                value="15"
+                data-i18n-aria="perline"
+              />
+              <input
+                type="number"
+                id="perline"
+                min="1"
+                max="50"
+                value="15"
+                data-i18n-aria="perline"
+              />
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend data-i18n="layout"></legend>
+            <label class="check"
+              ><input type="checkbox" id="center" disabled /><span
+                data-i18n="center"
+              ></span
+            ></label>
+            <p class="hint" id="center-hint" data-i18n="centerHint"></p>
+          </fieldset>
+
+          <fieldset>
+            <legend data-i18n="allIcons"></legend>
+            <label class="check"
+              ><input type="checkbox" id="all" /><span
+                data-i18n="allLabel"
+              ></span
+            ></label>
+          </fieldset>
+        </div>
+
+        <fieldset id="skills">
+          <legend data-i18n="skills"></legend>
+          <div class="skills__body">
+            <div class="selected__head">
+              <span class="hint" id="selected-count"></span>
+              <button
+                type="button"
+                class="icon-button"
+                id="clear-btn"
+                data-i18n-aria="clear"
+                data-i18n-title="clear"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"
+                  />
+                  <path d="M22 21H7" />
+                  <path d="m5 11 9 9" />
+                </svg>
+              </button>
+            </div>
+            <ol
+              class="chips"
+              id="chips"
+              role="list"
+              data-i18n-aria="selectedIcons"
+            ></ol>
+            <!-- Announces reordering results to screen readers -->
+            <div
+              class="visually-hidden"
+              id="announcer"
+              aria-live="polite"
+            ></div>
+
+            <div class="search">
+              <input
+                type="search"
+                id="search"
+                aria-controls="grid"
+                autocomplete="off"
+                data-i18n-placeholder="searchPlaceholder"
+                data-i18n-aria="search"
+              />
+              <span
+                class="search__count"
+                id="search-count"
+                aria-live="polite"
+              ></span>
+            </div>
+            <ul
+              class="grid"
+              id="grid"
+              role="list"
+              data-i18n-aria="iconList"
+            ></ul>
+          </div>
+        </fieldset>
+      </section>
+    </main>
+
+    <!-- BUILD:SCRIPTS -->
+  </body>
+</html>
