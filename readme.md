@@ -12,7 +12,6 @@
 [![Test](https://github.com/ouka-lab/it-icons/actions/workflows/test.yml/badge.svg)](https://github.com/ouka-lab/it-icons/actions/workflows/test.yml)
 [![Format](https://github.com/ouka-lab/it-icons/actions/workflows/fmt.yml/badge.svg)](https://github.com/ouka-lab/it-icons/actions/workflows/fmt.yml)
 [![e2e](https://github.com/ouka-lab/it-icons/actions/workflows/e2e.yml/badge.svg)](https://github.com/ouka-lab/it-icons/actions/workflows/e2e.yml)
-![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/ouka-lab/it-icons?utm_source=oss&utm_medium=github&utm_campaign=ouka-lab%2Fit-icons&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
 # Why This Fork?
 
