@@ -3,6 +3,10 @@ changelog:
     labels:
       - ignore-for-release
   categories:
+    # Listed first so that a PR labeled both "new-icon" and "feature" goes here.
+    - title: 🎨 New Icons
+      labels:
+        - new-icon
     - title: 🚀 Features
       labels:
         - feature

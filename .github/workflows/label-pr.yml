@@ -1,14 +1,18 @@
 name: Label PR
 
-# Labels each PR from its title prefix so that the release notes generated from
-# .github/release.yml are categorized without labeling by hand.
+# Labels each PR so that the release notes generated from .github/release.yml
+# are categorized without labeling by hand:
+# - from its title prefix (feature: / fix: / docs: / chore:)
+# - "new-icon" when it adds an SVG under icons/, whatever the title is
 #
 # pull_request_target is used so that PRs from forks get a token that can add
 # labels. It is safe here because the workflow never checks out or runs PR code;
-# it only reads the title from the event payload.
+# it only reads the title from the event payload and the changed file list from
+# the API.
 on:
   pull_request_target:
-    types: [opened, edited, reopened]
+    # synchronize re-checks the files when new commits are pushed.
+    types: [opened, edited, reopened, synchronize]
 
 permissions:
   contents: read
@@ -29,15 +33,37 @@ jobs:
               chore: 'chore',
             };
             const { title, number } = context.payload.pull_request;
+            const labels = [];
+
             const prefix = title.match(/^(\w+)\b/)?.[1].toLowerCase();
-            const label = labelsByPrefix[prefix];
-            if (!label) {
+            const prefixLabel = labelsByPrefix[prefix];
+            if (prefixLabel) {
+              labels.push(prefixLabel);
+            } else {
               core.info(`No label for title: ${title}`);
+            }
+
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              ...context.repo,
+              pull_number: number,
+              per_page: 100,
+            });
+            const addsIcon = files.some(
+              (file) =>
+                file.status === 'added' &&
+                file.filename.startsWith('icons/') &&
+                file.filename.endsWith('.svg'),
+            );
+            if (addsIcon) {
+              labels.push('new-icon');
+            }
+
+            if (labels.length === 0) {
               return;
             }
             await github.rest.issues.addLabels({
               ...context.repo,
               issue_number: number,
-              labels: [label],
+              labels,
             });
-            core.info(`Added label "${label}"`);
+            core.info(`Added labels: ${labels.join(', ')}`);
