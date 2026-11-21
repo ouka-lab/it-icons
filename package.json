@@ -4,17 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "node build.js",
-    "readme": "node scripts/readme.js && bun fmt readme.md",
-    "dev": "npm run build && wrangler dev index.js --name it-icons --compatibility-date 2026-11-01",
-    "deploy": "npm run test:e2e && npm run build && wrangler deploy index.js --name it-icons --compatibility-date 2026-11-01",
-    "prepare": "husky",
+    "build": "bun build.js",
+    "readme": "bun scripts/readme.js && bun fmt readme.md",
+    "dev": "bun run build && wrangler dev index.js --name it-icons --compatibility-date 2026-11-01",
+    "deploy": "bun run test:e2e && bun run build && wrangler deploy index.js --name it-icons --compatibility-date 2026-11-01",
     "test": "bun run build && bun test",
     "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",
-    "husky": "^9.1.7",
     "valibot": "^1.5.0",
     "wrangler": "^4"
   }
