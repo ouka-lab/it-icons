@@ -2,7 +2,7 @@ name: Label PR
 
 # Labels each PR so that the release notes generated from .github/release.yml
 # are categorized without labeling by hand:
-# - from its title prefix (feature: / fix: / docs: / chore:)
+# - from its title prefix (feature: / fix: / docs: / chore: / new-icon:)
 # - "new-icon" when it adds an SVG under icons/, whatever the title is
 #
 # pull_request_target is used so that PRs from forks get a token that can add
@@ -31,11 +31,13 @@ jobs:
               fix: 'bug',
               docs: 'documentation',
               chore: 'chore',
+              'new-icon': 'new-icon',
             };
             const { title, number } = context.payload.pull_request;
             const labels = [];
 
-            const prefix = title.match(/^(\w+)\b/)?.[1].toLowerCase();
+            // [\w-] so that "new-icon" is read as one prefix, not "new".
+            const prefix = title.match(/^([\w-]+)/)?.[1].toLowerCase();
             const prefixLabel = labelsByPrefix[prefix];
             if (prefixLabel) {
               labels.push(prefixLabel);
